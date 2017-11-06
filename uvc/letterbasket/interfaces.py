@@ -1,29 +1,41 @@
+# -*- coding: utf-8 -*-
+
 from zope import schema
 from zope import interface
+from zope.location.interfaces import IContained
+from zope.container.interfaces import IContainer
+from zope.container.constraints import contains
+from dolmen.file import FileField
 
 
-class ILetterBasket(interface.Interface):
-    pass
+class IThreadRoot(interface.Interface):
+    """Marker interface for thread roots
+    """
 
 
-class IMessage(interface.Interface):
+class IMessage(IContained, IContainer):
+    contains('.IMessage')
 
     title = schema.TextLine(
         title=u"Title",
-        description=u"Please give a Title"
-        )
+        description=u"Please give a Title",
+    )
 
     subject = schema.TextLine(
         title=u"Subject",
-        description=u"Please provide a Subject"
-        )
+        description=u"Please provide a Subject",
+    )
 
     message = schema.TextLine(
         title=u"Message",
-        description=u"Please provide a Message"
-        )
+        description=u"Please provide a Message",
+    )
 
-#    attachement = schema.File(
-#        title=u"Attachment",
-#        description=u"Please provide a Description"
- #       )
+    attachment = FileField(
+        title=u"Attachment",
+        description=u"Please provide a Description",
+    )
+
+
+class ILetterBasket(interface.Interface):
+    contains(IMessage)

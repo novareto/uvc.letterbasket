@@ -1,0 +1,24 @@
+<div class="media">
+
+  <div class="media-heading">
+    <button class="btn btn-default btn-xs" type="button"
+	    data-toggle="collapse" data-target="#collapseThree"
+	    aria-expanded="false" aria-controls="collapseExample">
+      <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+    </button>
+    <span tal:content="string: Date" />
+  </div>
+  <div class="panel-collapse collapse in" id="collapseThree">
+    <div class="media-body">
+      <p tal:content="context/message" />
+      <div class="comment-meta">
+        <span><a href="#">sil</a></span>
+      </div>
+      <tal:replies condition="view/has_replies">
+	<tal:reply repeat="reply context/values">
+	  <div tal:replace="structure python:view.display(reply)" />
+	</tal:reply>
+      </tal:replies>
+    </div>
+  </div>
+</div>

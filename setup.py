@@ -23,6 +23,9 @@ setup(name='uvc.letterbasket',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'dolmen.file',
+          'dolmen.blob',
+          'dolmen.widget.file',
           # -*- Extra requirements: -*-
       ],
       entry_points={

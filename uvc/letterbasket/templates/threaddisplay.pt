@@ -1,0 +1,5 @@
+<div class="container">
+  <div class="post-comments">
+    <tal:threadroot replace="structure python:view.view()" />
+  </div>
+</div>
