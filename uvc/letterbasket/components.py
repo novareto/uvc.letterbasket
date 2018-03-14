@@ -3,18 +3,22 @@
 import pytz
 import grok
 import uvcsite
+
+from dolmen.blob import BlobProperty
 from zope.interface import implementer
-from .interfaces import IMessage, ILetterBasket
+from zope.securitypolicy.interfaces import Allow
 from zope.container.interfaces import INameChooser
 from zope.dublincore.interfaces import IZopeDublinCore
-from dolmen.blob import BlobProperty
+from zope.securitypolicy.securitymap import SecurityMap
+from .interfaces import IMessage, ILetterBasket, IThreadRoot
+from dolmen.security.policies.principalrole import ExtraRoleMap
 
 
 @implementer(IMessage)
 class Message(uvcsite.Content, grok.OrderedContainer):
     """ Lastschrift Objekt
     """
-    grok.name('Lastschrift')
+    grok.name('Nachricht')
     uvcsite.schema(IMessage)
 
     attachment = BlobProperty(IMessage['attachment'])
@@ -23,6 +27,10 @@ class Message(uvcsite.Content, grok.OrderedContainer):
         grok.OrderedContainer.__init__(self, *args, **kwargs)
         uvcsite.Content.__init__(self, *args, **kwargs)
         self.count = 1
+
+    @property
+    def meta_type(self):
+        return u"Nachricht"
 
     def getContentType(self):
         return uvcsite.contenttype.bind().get(self)
@@ -47,7 +55,7 @@ class Message(uvcsite.Content, grok.OrderedContainer):
     def excludeFromNav(self):
         return True
 
-        
+
 # Externalized class directive to be able to
 # declare Message containing itself.
 uvcsite.contenttype.set(Message, Message)
@@ -58,3 +66,22 @@ class LetterBasket(uvcsite.ProductFolder):
     """ Container fr Lastschrift Objekte
     """
     uvcsite.contenttype(Message)
+    title = u"Postfach"
+
+
+class QuickUserRoleManager(ExtraRoleMap, grok.Adapter):
+    grok.context(Message)
+
+    def _compute_extra_data(self):
+        extra_map = SecurityMap()
+        extra_map.addCell('uvc.Editor', 'servicetelefon-0', Allow)
+        return extra_map
+
+
+class ST(ExtraRoleMap, grok.Adapter):
+    grok.context(IThreadRoot)
+
+    def _compute_extra_data(self):
+        extra_map = SecurityMap()
+        extra_map.addCell('uvc.Editor', 'servicetelefon-0', Allow)
+        return extra_map

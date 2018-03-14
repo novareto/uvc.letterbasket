@@ -17,23 +17,30 @@ class IMessage(IContained, IContainer):
     contains('.IMessage')
 
     title = schema.TextLine(
-        title=u"Title",
-        description=u"Please give a Title",
+        title=u"Betreff",
+        description=u"Der Betreff Ihrer Nachricht",
     )
 
-    subject = schema.TextLine(
-        title=u"Subject",
-        description=u"Please provide a Subject",
-    )
+    #subject = schema.TextLine(
+    #    title=u"Grund",
+    #    description=u"Der Grund Ihrer Nachricht",
+    #)
 
-    message = schema.TextLine(
-        title=u"Message",
-        description=u"Please provide a Message",
+    #message = schema.TextLine(
+    message = schema.Text(
+        title=u"Nachricht",
+        description=u"Bitte tragen Sie hier Ihre Nachricht ein",
     )
 
     attachment = FileField(
-        title=u"Attachment",
-        description=u"Please provide a Description",
+        title=u"Anhang",
+        required=False,
+        description=u"Bitte waehlen Sie die Datei, die Sie uns senden moechten.",
+    )
+
+    access_token = schema.TextLine(
+        title=u"   ",
+        required=False,
     )
 
 

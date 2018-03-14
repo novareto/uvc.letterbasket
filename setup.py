@@ -26,6 +26,7 @@ setup(name='uvc.letterbasket',
           'dolmen.file',
           'dolmen.blob',
           'dolmen.widget.file',
+          'pycrypto',
           # -*- Extra requirements: -*-
       ],
       entry_points={

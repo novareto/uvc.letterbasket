@@ -2,4 +2,5 @@
   <div class="post-comments">
     <tal:threadroot replace="structure python:view.view()" />
   </div>
+  <a class="btn btn-primary" tal:attributes="href python:view.url(view.context.__parent__)"> Zurück </a> 
 </div>

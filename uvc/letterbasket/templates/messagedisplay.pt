@@ -1,24 +1,26 @@
 <div class="media" tal:define="info context/about">
   <div class="media-heading">
-    <button class="btn btn-default btn-xs" type="button"
-	    data-toggle="collapse" aria-expanded="false"
-	    aria-controls="collapseThread"
-	    tal:attributes="data-target string:#${view/uid}">
+    Gesendet am: <span tal:content="python:info['created'].strftime('%d/%m/%Y %H:%M:%S')" /> von
+    <span tal:content="info/creator" />
+    <a data-toggle="collapse" aria-expanded="false"
+       aria-controls="collapseThread"
+       class="pull-right"
+       tal:attributes="data-target string:#${view/uid}">
       <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-    </button>
-    Posted the <span tal:content="info/created" /> by
-               <span tal:content="info/creator" />
+    </a>
   </div>
   <div class="panel-collapse collapse in" tal:attributes="id view/uid">
     <div class="media-body">
       <p tal:content="context/message" />
       <div class="comment-meta">
         <span><a href="" tal:attributes="href string:${view/uri}/add"
-		 >reply</a></span>
+		 >Antworten</a></span>
         <span><a href="" tal:attributes="href view/download"
 		 tal:condition="view/download"
-		 >Download attachment</a></span>
+		 >Anhang herunterladen</a></span>
       </div>
+    </div>
+    <div class="comment-replies">
       <tal:replies condition="view/has_replies">
 	<tal:reply repeat="reply context/values">
 	  <div tal:replace="structure python:view.display(reply)" />
