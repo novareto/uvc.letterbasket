@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import grok
 import json
 import time
 
@@ -28,7 +29,7 @@ def rsa_pair(pvt_path, pub_path):
         container = path.dirname(pub_path)
         if not path.isdir(container):
             makedirs(container)
-            
+
         key = RSA.generate(2048)
 
         with open(pvt_path, 'wb') as fd:
@@ -47,14 +48,14 @@ def load_key(private, public):
 
     with open(private, 'rb') as fd:
         pub_key = RSA.importKey(fd.read())
-        
+
     return priv_key, pub_key
 
 
 def make_token():
     priv_key, pub_key = load_key(
         '/tmp/letterbox.key', '/tmp/letterbox.pub')
-    
+
     ts = int(time.mktime((datetime.now() + timedelta(days=3)).timetuple()))
     token = json.dumps({
         'timestamp': ts,
@@ -81,22 +82,21 @@ class TokenAuthenticator(object):
         try:
             token = b64decode(access_token)
             priv_key, pub_key = load_key(
-                '/tmp/letterbox.key', '/tmp/letterbox.pub')            
+                '/tmp/letterbox.key', '/tmp/letterbox.pub')
             decrypted = priv_key.decrypt((token,))
             data = json.loads(decrypted)
         except TypeError:
             return None
         except Exception as exc:
-            import pdb; pdb.set_trace()
             print exc  # log this nasty error
             return None
 
         now = int(time.time())
-        
+
         if now > data['timestamp']:
             # expired
             return None
-        
+
         authenticated = dict(
                 id=data['id'] + '-0',
                 title='Token generated',
@@ -108,3 +108,8 @@ class TokenAuthenticator(object):
         """we don´t need this method"""
         if id.startswith('uvc.'):
             return PrincipalInfo(id, id, id, id)
+
+
+grok.global_utility(TokenAuthenticator, name="token_auth")
+from uvcsite.auth.token import TokensCredentialsPlugin
+grok.global_utility(TokensCredentialsPlugin, name="token_creds")
