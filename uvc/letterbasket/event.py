@@ -84,7 +84,7 @@ def handle_save(obj, event, transition='publish'):
             filename = obj.attachment.filename
         um = getUtility(IUserManagement)
         link = "%s?form.field.access_token=%s" % (grok.url(event.request, obj, 'add'), make_token())
-        link = link.replace('https://schule-login.ukh.de', 'http://10.64.54.12')
+        link = link.replace('https://schule-login.ukh.de', 'http://10.64.54.12:7787/app')
         f_adr = "schulportal@ukh.de"
         hf = getHomeFolder(obj)
         # Servicetelefon !!!!
