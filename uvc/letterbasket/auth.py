@@ -13,6 +13,12 @@ from zope.pluggableauth import interfaces
 from zope.interface import implementer
 from zope.pluggableauth.factories import PrincipalInfo
 from Crypto.PublicKey import RSA
+from zope.app.appsetup.product import getProductConfiguration
+
+
+config = getProductConfiguration('keys')
+pubkey = config['pubkey']
+privkey = config['privkey']
 
 
 def rsa_pair(pvt_path, pub_path):
@@ -54,7 +60,7 @@ def load_key(private, public):
 
 def make_token():
     priv_key, pub_key = load_key(
-        '/tmp/letterbox.key', '/tmp/letterbox.pub')
+        privkey, pubkey)
 
     ts = int(time.mktime((datetime.now() + timedelta(days=3)).timetuple()))
     token = json.dumps({
@@ -82,7 +88,7 @@ class TokenAuthenticator(object):
         try:
             token = b64decode(access_token)
             priv_key, pub_key = load_key(
-                '/tmp/letterbox.key', '/tmp/letterbox.pub')
+                privkey, pubkey)
             decrypted = priv_key.decrypt((token,))
             data = json.loads(decrypted)
         except TypeError:
