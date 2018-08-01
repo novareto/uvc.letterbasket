@@ -67,6 +67,12 @@ from uvcsite.extranetmembership.interfaces import IUserManagement
 from zope.component import getUtility
 from .auth import make_token
 
+import unicodedata
+
+def remove_accents(input_str):
+    nkfd_form = unicodedata.normalize('NFKD', unicode(input_str))
+    return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
+
 
 @grok.subscribe(IMessage, uvcsite.IAfterSaveEvent)
 def handle_save(obj, event, transition='publish'):
@@ -102,6 +108,8 @@ def handle_save(obj, event, transition='publish'):
             adrz2 = sdat['ikstr'].strip()### + ' ' + sdat['iknam2'].strip()
             adrz3 = str(sdat['enrplz']).strip() + ' ' + sdat['ikhort'].strip()
             body = BODY % (adrz1, adrz2, adrz3, nachrichtentext, link)
+        to = ['m.seibert@ukh.de', ]
+        filename = remove_accents(filename)
         send_mail(
             f_adr,
             to,
