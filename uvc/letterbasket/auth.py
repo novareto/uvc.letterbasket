@@ -62,7 +62,7 @@ def make_token():
     priv_key, pub_key = load_key(
         privkey, pubkey)
 
-    ts = int(time.mktime((datetime.now() + timedelta(days=3)).timetuple()))
+    ts = int(time.mktime((datetime.now() + timedelta(days=10)).timetuple()))
     token = json.dumps({
         'timestamp': ts,
         'id': 'servicetelefon',
