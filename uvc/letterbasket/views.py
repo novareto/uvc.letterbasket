@@ -19,7 +19,7 @@ grok.templatedir('templates')
 
 
 #### THIS IS DEMO VIEW
-from .auth import make_token
+from uvc.token_auth.plugin import TokenAuthenticationPlugin
 from zope.interface import Interface
 
 class Token(grok.View):
@@ -28,7 +28,7 @@ class Token(grok.View):
     grok.require('zope.Public')
 
     def render(self):
-        return make_token()
+        return TokenAuthenticationPlugin.generate_token()
 ####
 
 
@@ -43,7 +43,7 @@ def lineage(node, target):
 class AddThread(Add):
     grok.name('add')
     grok.context(ILetterBasket)
-        
+
     @property
     def fields(self):
         fields = super(AddThread, self).fields
@@ -72,7 +72,7 @@ class AddThread(Add):
             self._finishedAdd = True
             grok.notify(AfterSaveEvent(obj, self.request))
 
-        
+
 class AddMessage(Add):
     grok.name('add')
     grok.context(IMessage)
@@ -86,7 +86,7 @@ class AddMessage(Add):
     def update(self):
         self.thread = lineage(self.context, IThreadRoot)
         Add.update(self)
-    
+
     def add(self, *args, **kwargs):
         Add.add(self, *args, **kwargs)
         self.thread.count += 1
@@ -95,7 +95,7 @@ class AddMessage(Add):
         self.flash('Vielen Dank, Ihre Nachricht wurde gesendet.')
         data, errors = self.extractData()
         if 'access_token' in data.keys():
-            at = "?form.field.access_token=%s" % make_token() 
+            at = "?form.field.access_token=%s" % make_token()
             print "TURL", self.url(self.thread)  + at
             return self.url(self.thread) + at
         return self.url(self.thread)
@@ -154,6 +154,8 @@ class MessageDisplay(grok.View):
     grok.context(IMessage)
     grok.require('zope.Public')
 
+    can_answer = True
+
     def update(self):
         self.has_replies = bool(len(self.context))
         self.uri = self.url(self.context)
@@ -173,7 +175,8 @@ class MessageDisplay(grok.View):
 class ThreadDisplay(uvcsite.Page):
     grok.name('index')
     grok.context(IThreadRoot)
-#    grok.require('zope.Public')
+
+    can_answer = True
 
     def update(self):
         threadcss.need()

@@ -5,11 +5,15 @@ import grok
 import uvcsite
 import tempfile
 import transaction
+import unicodedata
 
 from grokcore.message import send
-from uvc.letterbasket.interfaces import IMessage
-from uvcsite.utils.mail import send_mail
 from hurry.workflow.interfaces import IWorkflowInfo
+from uvc.letterbasket.interfaces import IMessage
+from uvc.token_auth.plugin import TokenAuthenticationPlugin
+from uvcsite.extranetmembership.interfaces import IUserManagement
+from uvcsite.utils.mail import send_mail
+from zope.component import getUtility
 
 
 BODY = u"""\
@@ -63,11 +67,6 @@ def getHomeFolder(obj):
         obj = obj.__parent__
     raise ValueError("NoHF Found")
 
-from uvcsite.extranetmembership.interfaces import IUserManagement
-from zope.component import getUtility
-from .auth import make_token
-
-import unicodedata
 
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', unicode(input_str))
@@ -89,7 +88,7 @@ def handle_save(obj, event, transition='publish'):
             fname = ntf.name
             filename = obj.attachment.filename
         um = getUtility(IUserManagement)
-        link = "%s?form.field.access_token=%s" % (grok.url(event.request, obj, 'add'), make_token())
+        link = "%s?form.field.access_token=%s" % (grok.url(event.request, obj, 'add'), TokenAuthenticationPlugin.generate_token())
         link = link.replace('https://schule-login.ukh.de', 'http://10.64.54.12:7787/app')
         f_adr = "schulportal@ukh.de"
         hf = getHomeFolder(obj)

@@ -27,12 +27,12 @@ setup(name='uvc.letterbasket',
           'dolmen.blob',
           'dolmen.widget.file',
           'pycrypto',
-          # -*- Extra requirements: -*-
+          'uvc.token_auth',
       ],
       entry_points={
          'fanstatic.libraries': [
             'uvc.letterbasket = uvc.letterbasket.resources:library',
             ],
-         'z3c.autoinclude.plugin': 'target=uvcsite', 
+#         'z3c.autoinclude.plugin': 'target=uvcsite',
       }
       )
