@@ -122,5 +122,5 @@ def handle_save(obj, event, transition='publish'):
         send(u'Vielen Dank, Ihre Nachricht wurde gesendet.', type='message', name='session')
     except StandardError:
         sp.rollback()
-        IWorkflowInfo(obj).fireTransition('progress')
+        # IWorkflowInfo(obj).fireTransition('progress')
         uvcsite.logger.exception("Achtung FEHLER")

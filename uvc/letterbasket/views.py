@@ -9,7 +9,8 @@ from datetime import datetime, timedelta
 
 from uvc.layout.forms.event import AfterSaveEvent
 from uvcsite.content.views import Add, Edit
-from zope.interface import directlyProvides
+from zope.interface import Interface, directlyProvides
+from zope.component import getMultiAdapter
 
 from .interfaces import IThreadRoot, IMessage, ILetterBasket
 from .resources import threadcss
@@ -95,7 +96,8 @@ class AddMessage(Add):
         self.flash('Vielen Dank, Ihre Nachricht wurde gesendet.')
         data, errors = self.extractData()
         if 'access_token' in data.keys():
-            at = "?form.field.access_token=%s" % make_token()
+            at = "?form.field.access_token=%s" % (
+                TokenAuthenticationPlugin.generate_token())
             print "TURL", self.url(self.thread)  + at
             return self.url(self.thread) + at
         return self.url(self.thread)
@@ -154,20 +156,25 @@ class MessageDisplay(grok.View):
     grok.context(IMessage)
     grok.require('zope.Public')
 
-    can_answer = True
-
     def update(self):
         self.has_replies = bool(len(self.context))
-        self.uri = self.url(self.context)
-        self.uid = hashlib.sha1(self.uri).hexdigest()
+        self.uid = hashlib.sha1(self.context._p_oid).hexdigest()
+
+    def actions(self):
+        uri = self.url(self.context)
+        yield {
+            'title': 'Antworten',
+            'url': '%s/add' % uri
+        }
         attachment = getattr(self.context, 'attachment', None)
-        if attachment:
-            self.download = "%s/++download++attachment" % self.uri
-        else:
-            self.download = None
+        if attachment is not None:
+            yield {
+                'title': 'Anhang herunterladen',
+                'url': "%s/++download++attachment" % uri
+            }
 
     def display(self, reply):
-        view = MessageDisplay(reply, self.request)
+        view = getMultiAdapter((reply, self.request), name='display')
         view.update()
         return view()
 
@@ -176,11 +183,9 @@ class ThreadDisplay(uvcsite.Page):
     grok.name('index')
     grok.context(IThreadRoot)
 
-    can_answer = True
-
     def update(self):
         threadcss.need()
-        self.view = MessageDisplay(self.context, self.request)
+        self.view = getMultiAdapter((self.context, self.request), name='display')
         self.view.update()
 
 

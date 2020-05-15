@@ -12,14 +12,10 @@
   <div class="panel-collapse collapse in" tal:attributes="id view/uid">
     <div class="media-body">
       <p tal:content="context/message" />
-      <div class="comment-meta">
-        <span><a href=""
-                 tal:condition="view.can_reply"
-                 tal:attributes="href string:${view/uri}/add"
-		 >Antworten</a></span>
-        <span><a href="" tal:attributes="href view/download"
-		 tal:condition="view/download"
-		 >Anhang herunterladen</a></span>
+      <div class="comment-meta" tal:repeat="action view/actions">
+        <form tal:attributes="action action/url" method="POST">
+          <input type="submit" tal:attributes="value action/title" />
+        </form>
       </div>
     </div>
     <div class="comment-replies">
