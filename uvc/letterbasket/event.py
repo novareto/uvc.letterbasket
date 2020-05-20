@@ -73,7 +73,7 @@ def remove_accents(input_str):
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
 
 
-@grok.subscribe(IMessage, uvcsite.IAfterSaveEvent)
+#@grok.subscribe(IMessage, uvcsite.IAfterSaveEvent)
 def handle_save(obj, event, transition='publish'):
     sp = transaction.savepoint()
     try:

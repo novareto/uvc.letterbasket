@@ -12,6 +12,7 @@ from zope.dublincore.interfaces import IZopeDublinCore
 from zope.securitypolicy.securitymap import SecurityMap
 from .interfaces import IMessage, ILetterBasket, IThreadRoot
 from dolmen.security.policies.principalrole import ExtraRoleMap
+from hurry.workflow.interfaces import IWorkflowState
 
 
 @implementer(IMessage)
@@ -49,6 +50,7 @@ class Message(uvcsite.Content, grok.OrderedContainer):
         dc = IZopeDublinCore(self)
         about['creator'] = dc.creators and dc.creators[0] or 'Unknown user'
         about['created'] = dc.created
+        about['status'] = IWorkflowState(self).getState()
         return about
 
     @property

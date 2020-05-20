@@ -14,6 +14,7 @@ from zope.component import getMultiAdapter
 
 from .interfaces import IThreadRoot, IMessage, ILetterBasket
 from .resources import threadcss
+from zeam.form.base.markers import HIDDEN
 
 
 grok.templatedir('templates')
@@ -49,6 +50,7 @@ class AddThread(Add):
     def fields(self):
         fields = super(AddThread, self).fields
         fields['access_token'].mode = "hidden"
+        fields['__name__'].mode = HIDDEN 
         return fields
 
     def create(self, data):
@@ -73,7 +75,6 @@ class AddThread(Add):
             self._finishedAdd = True
             grok.notify(AfterSaveEvent(obj, self.request))
 
-
 class AddMessage(Add):
     grok.name('add')
     grok.context(IMessage)
@@ -82,6 +83,7 @@ class AddMessage(Add):
     def fields(self):
         fields = super(AddMessage, self).fields
         fields['access_token'].mode = "hidden"
+        fields['__name__'].mode = HiddenMarker
         return fields
 
     def update(self):
