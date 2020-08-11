@@ -14,7 +14,7 @@ from zope.component import getMultiAdapter
 
 from .interfaces import IThreadRoot, IMessage, ILetterBasket
 from .resources import threadcss
-from zeam.form.base.markers import HIDDEN
+from zeam.form.base.markers import HIDDEN, HiddenMarker
 
 
 grok.templatedir('templates')
@@ -83,7 +83,7 @@ class AddMessage(Add):
     def fields(self):
         fields = super(AddMessage, self).fields
         fields['access_token'].mode = "hidden"
-        fields['__name__'].mode = HiddenMarker
+        fields['__name__'].mode = HIDDEN 
         return fields
 
     def update(self):

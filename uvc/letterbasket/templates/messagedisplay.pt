@@ -1,7 +1,6 @@
 <div class="media" tal:define="info context/about">
   <div class="media-heading">
-    Gesendet am: <span tal:content="python:info['created'].strftime('%d/%m/%Y %H:%M:%S')" /> von
-    <span tal:content="info/creator" />
+    Gesendet am: <span tal:content="python:info['created'].strftime('%d/%m/%Y %H:%M:%S')" /> 
     <a data-toggle="collapse" aria-expanded="false"
        aria-controls="collapseThread"
        class="pull-right"
@@ -11,7 +10,7 @@
   </div>
   <div class="panel-collapse collapse in" tal:attributes="id view/uid">
     <div class="media-body">
-      <p tal:content="context/message" />
+      <p tal:content="structure context/message" />
       <div class="comment-meta" tal:repeat="action view/actions">
         <form tal:attributes="action action/url" method="POST">
           <input type="submit" tal:attributes="value action/title" />

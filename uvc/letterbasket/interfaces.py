@@ -43,6 +43,11 @@ class IMessage(IContained, IContainer):
         required=False,
     )
 
+    doc_id = schema.TextLine(
+        title=u"doc_id",
+        required=False,
+    )
+
 
 class ILetterBasket(interface.Interface):
     contains(IMessage)
