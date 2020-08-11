@@ -13,7 +13,10 @@ from zope.securitypolicy.securitymap import SecurityMap
 from .interfaces import IMessage, ILetterBasket, IThreadRoot
 from dolmen.security.policies.principalrole import ExtraRoleMap
 from hurry.workflow.interfaces import IWorkflowState
+import pytz
 
+
+tz = pytz.timezone("Europe/Berlin")
 
 @implementer(IMessage)
 class Message(uvcsite.Content, grok.OrderedContainer):
@@ -49,7 +52,7 @@ class Message(uvcsite.Content, grok.OrderedContainer):
         about = {}
         dc = IZopeDublinCore(self)
         about['creator'] = dc.creators and dc.creators[0] or 'Unknown user'
-        about['created'] = dc.created
+        about['created'] = dc.created.astimezone(tz)
         about['status'] = IWorkflowState(self).getState()
         return about
 
