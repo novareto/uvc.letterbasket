@@ -58,12 +58,12 @@ class AddThread(Add):
         directlyProvides(content, IThreadRoot)
         return content
 
-    @uvcsite.action(u'Abbrechen')
-    def handle_cancel(self):
-        self.flash(u'Die Aktion wurde abgebrochen')
-        self.redirect(self.application_url())
+#    @uvcsite.action(u'Abbrechen')
+#    def handle_cancel(self):
+#        self.flash(u'Die Aktion wurde abgebrochen')
+#        self.redirect(self.application_url())
 
-    @uvcsite.action(u'Senden', identifier="uvcsite.add")
+    @uvcsite.action(u'Nachricht senden', identifier="uvcsite.add")
     def handleAdd(self):
         data, errors = self.extractData()
         if errors:
